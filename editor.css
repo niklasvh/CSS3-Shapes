@@ -1,0 +1,292 @@
+/* 
+    Document   : editor
+    Created on : 7.1.2012, 16:28:16
+    Author     : Niklas von Hertzen <niklas at hertzen.com>
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+root { 
+    display: block;
+}
+
+.adjustable {
+    color: #6294e0;
+    border-bottom:1px dotted #6294e0;
+    cursor: e-resize;
+    background:transparent;
+    display:inline;
+}  
+
+
+
+.bypixels .adjustable:after {
+    content:" px";
+}
+
+.bypercentage .adjustable:after {
+    content:" %";
+}
+
+.adjustable:after {
+
+    color: #fff;
+    border-bottom:0;
+}
+/* ugly fix, but for some reason it isn't registing enter key always for JS to catch */
+.adjustable br {
+    display:none;
+}
+
+.adjustable[contenteditable="true"]:after {
+    content:"";
+}
+
+.adjustable.nounit:after {
+    content:"";
+}
+
+
+.adjustable[contenteditable="true"] {
+    background: #a1a1a1;
+    width:75px;
+
+    color: #000;
+}
+
+
+#preview {
+
+    width: 100%;
+    background: #fff;
+
+    min-height:600px;
+    position:absolute;
+    overflow:hidden;
+
+
+
+
+}
+
+#layers {
+    font-size:11px;
+    padding:0;
+    width:195px;
+    margin:5px;
+}
+
+#layers li {
+    list-style-type:none;
+
+    width:100%;
+    padding:5px;
+
+}
+
+.edit-property td {
+    border:0;
+    text-align:center;
+    font-size:11px;
+    padding:0;
+    width:45px;
+    line-height:45px;
+}
+
+.edit-properties {
+    font-size:11px;
+    padding-left:30px;
+    padding-right:5px;
+}
+
+.edit-property {
+    padding: 5px 10px ;
+    font-size:11px;
+
+}
+
+.edit-property label {
+    width:60px;
+    color: #fff;
+    font-size:11px;
+    margin-right:10px;
+    clear:both;
+}
+
+.edit-property input {
+    width:100px;
+    font-size:11px;
+    height:20px;
+    line-height:10px;
+    padding:0;
+
+}
+
+.edit-property select {
+    width:100px;
+    font-size:11px;
+    height:20px;
+    line-height:20px;
+    margin-top:6px;
+}
+
+#preview .css3shape {
+    position:absolute;
+    background:#ccc;
+    cursor:pointer;
+    border:1px solid transparent;
+
+    transform-origin: 50% 50%;
+    -webkit-transform-origin: 50% 50%;
+    -moz-transform-origin: 50% 50%;
+    -o-transform-origin: 50% 50%;
+    -ms-transform-origin: 50% 50%;
+}
+
+#preview .css3shape.selected-shape {
+
+    border-color: #6294e0 !important;
+}
+
+#preview #selection-origin {
+    width:6px;
+    height:6px;
+    position:absolute;  
+    cursor: default;
+    background: #6294e0;
+    margin-left:-3px;
+
+    left:50%;
+    top:50%;
+
+}
+
+#backgroundcolor {
+    text-transform:uppercase;
+}
+
+#preview .border-position {
+    width:5px;
+    height:5px;
+    position:absolute;
+    border: 1px solid #fff;
+    background: #000;
+
+    -webkit-border-radius: 3px; 
+    -moz-border-radius: 3px; 
+    border-radius: 3px; 
+    
+    cursor:default;
+}
+
+#preview #border-position-top-left {
+    top:0;
+    left:0;
+    margin:-2px 0 0 -2px;
+}
+
+#preview #border-position-top-right {
+    top:0;
+    right:0;
+    margin:-2px -2px 0 0;
+}
+
+
+#preview #border-position-bottom-left {
+    bottom:0;
+    left:0;
+    margin: 0 -2px -2px 0;
+}
+
+#preview #border-position-bottom-right {
+    bottom:0;
+    right:0;
+     margin: 0 0 -2px -2px;
+}
+
+#preview .selection-size {
+    width:5px;
+    height:5px;
+    position:absolute;
+    border: 1px solid #6294e0;
+    background: #fff;
+
+    -webkit-border-radius: 3px; 
+    -moz-border-radius: 3px; 
+    border-radius: 3px; 
+
+
+    -moz-background-clip: padding; -webkit-background-clip: padding-box; background-clip: padding-box;
+
+
+}
+
+#selection-size-top-left{
+    cursor: nw-resize;
+}
+
+#selection-size-top-right{
+    cursor: ne-resize;
+}
+
+#selection-size-bottom-left{
+    cursor: sw-resize;
+}
+
+#selection-size-bottom-right{
+    cursor: se-resize;
+}
+
+#selection-size-top-left, #selection-size-left, #selection-size-bottom-left {
+    left:0;
+    margin-left:-4px;
+}
+
+
+
+#selection-size-top-right, #selection-size-right, #selection-size-bottom-right {
+    right:0;
+    margin-right:-4px;
+}
+
+#selection-size-right, #selection-size-left {
+    top: 50%;
+    margin-top:-4px;
+    cursor: e-resize;
+}
+
+
+#selection-size-top, #selection-size-bottom {
+    left: 50%;
+    margin-left:-4px;
+    cursor:n-resize;
+}
+
+#selection-size-top-left, #selection-size-top, #selection-size-top-right {
+    top: 0;
+    margin-top:-4px;
+}
+
+#selection-size-bottom-left, #selection-size-bottom, #selection-size-bottom-right {
+    bottom: 0;
+    margin-bottom:-4px;
+}
+
+
+
+.selected-shape #preview-selection {
+    display:block;
+    cursor: move;
+}
+
+
+
+
+#preview-selection {
+    display:none;
+    width:100%;
+    height:100%;
+
+
+    z-index:99999999;
+}

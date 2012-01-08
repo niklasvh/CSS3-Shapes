@@ -1,85 +1,264 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <meta charset='utf-8'>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>CSS3 Shapes</title>
+        <meta name="description" content="">
+        <meta name="author" content="">
 
-  <title>niklasvh/CSS3-Shapes @ GitHub</title>
+        <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+        <!--[if lt IE 9]>
+          <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
 
-  <style type="text/css">
-    body {
-      margin-top: 1.0em;
-      background-color: #a73a0f;
-      font-family: Helvetica, Arial, FreeSans, san-serif;
-      color: #ffffff;
-    }
-    #container {
-      margin: 0 auto;
-      width: 700px;
-    }
-    h1 { font-size: 3.8em; color: #58c5f0; margin-bottom: 3px; }
-    h1 .small { font-size: 0.4em; }
-    h1 a { text-decoration: none }
-    h2 { font-size: 1.5em; color: #58c5f0; }
-    h3 { text-align: center; color: #58c5f0; }
-    a { color: #58c5f0; }
-    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
-    .download { float: right; }
-    pre { background: #000; color: #fff; padding: 15px;}
-    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
-    .footer { text-align:center; padding-top:30px; font-style: italic; }
-  </style>
-</head>
+        <!-- Le styles -->
+        <link href="bootstrap.css" rel="stylesheet">
 
-<body>
-  <a href="https://github.com/niklasvh/CSS3-Shapes"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+        <link href="editor.css" rel="stylesheet">
 
-  <div id="container">
+        <style type="text/css">
+            body {
+                padding-top: 45px;
+                background: #191919;
+            }
 
-    <div class="download">
-      <a href="https://github.com/niklasvh/CSS3-Shapes/zipball/master">
-        <img border="0" width="90" src="https://github.com/images/modules/download/zip.png"></a>
-      <a href="https://github.com/niklasvh/CSS3-Shapes/tarball/master">
-        <img border="0" width="90" src="https://github.com/images/modules/download/tar.png"></a>
-    </div>
+            .well{
+                background: #484848;
+                color: #fff;
+                border: 1px solid #5d5d5d;
+                padding:0;
 
-    <h1><a href="https://github.com/niklasvh/CSS3-Shapes">CSS3-Shapes</a>
-      <span class="small">by <a href="https://github.com/niklasvh">niklasvh</a></span></h1>
+            }
 
-    <div class="description">
-      CSS3 shape editor
-    </div>
+            .container-fluid {
+                padding-left:5px;
+                padding-right:5px;
+            }
 
-    
+            .sidebar {
+                left:5px !important;
+            }
 
-    
+            .content {
+                margin-left: 225px !important;
+                margin-top:0;
+                padding:0;
+            }
 
-    
+            a {
+                color:  #c89200;
+            }
+            a:hover {
+                color: #c8ad5b;
+            }
 
-    
+            .btn span {
+                display:block;
+                width:16px;
+                height:16px;
+            }
+            #tools {
+                line-height:40px;
+            }
 
-    
+            .well hr {
+                border-top:1px solid #262626;
+                background:#575757;
+                border-bottom: 1px solid #575757;
+                margin:5px 0;
+            }
 
-    
-      <h2>Contact</h2>
-      <p>Niklas von Hertzen (niklasvh@gmail.com)<br/>      </p>
-    
+        </style>
 
-    <h2>Download</h2>
-    <p>
-      You can download this project in either
-      <a href="https://github.com/niklasvh/CSS3-Shapes/zipball/master">zip</a> or
-      <a href="https://github.com/niklasvh/CSS3-Shapes/tarball/master">tar formats.
-    </p>
-    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
-      by running:
-      <pre>$ git clone git://github.com/niklasvh/CSS3-Shapes</pre>
-    </p>
+        <!-- Le fav and touch icons -->
+        <link rel="shortcut icon" href="images/favicon.ico">
+        <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    </head>
 
-    <div class="footer">
-      get the source code on GitHub : <a href="https://github.com/niklasvh/CSS3-Shapes">niklasvh/CSS3-Shapes</a>
-    </div>
+    <body>
 
-  </div>
+        <div class="topbar">
+            <div class="topbar-inner">
+                <div class="container-fluid">
+                    <a class="brand" href="https://github.com/niklasvh/CSS3-Shapes">CSS3 Shapes</a>
+                    <ul class="nav">
+                        <li class="active"><a href="#">Home</a></li>
+                      
+                  
+                    </ul>
 
-</body>
+                    <span id="tools">
+
+                        <a href="#" class="btn small primary" id="edit-shape">Edit object</a>
+
+                        <span id="shapes">
+                            <a href="#" class="btn small"  data-shape="rectangle">Rectangle</a>
+                        </span>
+                    </span>
+                    
+                    <span class="pull-right" style="line-height:40px;">
+                        <a href="#" class="btn small info"  data-shape="rectangle">View Source</a>
+                        
+                         <a href="#" class="btn small success"  data-shape="rectangle">Save changes</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid"> <div class="sidebar">
+                <div class="well" id="element-options">
+                    <div class="bypercentage">
+                        <div class="edit-property">
+                            <label>Name: </label> <input type="text" id="itemclass" />
+
+                            <label for="placeby">Units:</label>
+
+                            <select id="placeby">
+                                <option value="percentage">Percentage</option>
+                                <option value="pixels">Pixels</option>
+                            </select>
+                        </div>
+
+                        <hr />
+
+                        <div class="edit-properties">
+                            <div style="width:85px;float:left;">
+                                Position <br />
+                                X: <span class="adjustable" id="position-x">0</span><br />
+                                Y: <span class="adjustable" id="position-y">0</span><br />
+                            </div>
+                            <div style="width:85px;float:left;">
+                                Size<br />
+                                W: <span class="adjustable" id="size-w">0</span><br />
+                                H: <span class="adjustable" id="size-h">0</span><br />
+
+                            </div>
+                            <div style="clear:both;"></div>
+
+                        </div>
+
+
+                        <hr />
+                        <div class="edit-property">
+                            <label>Color: </label> <input type="text" id="backgroundcolor" value="#484848" />
+
+                        </div>
+
+                        <hr />
+
+                        <div class="edit-properties">
+                            <div style="width:85px;float:left;">
+                                Origin <br />
+                                X: <span class="adjustable" id="origin-x">0</span><br />
+                                Y: <span class="adjustable" id="origin-y">0</span><br />
+                            </div>
+
+                            <div style="width:85px;float:left;">
+                                Rotation <br />
+                                <span class="adjustable nounit" id="rotation">0</span> deg<br />
+
+                            </div>
+
+                            <div style="clear:both;height:10px;"></div>
+                            <div style="width:85px;float:left;">
+                                Skew <br />
+                                X: <span class="adjustable nounit" id="skew-x">0</span> &deg;<br />
+                                Y: <span class="adjustable nounit" id="skew-y">0</span> &deg;<br />
+                            </div>
+                            <!--
+                                                        <div style="width:70px;float:left;">
+                                                            Scale <br />
+                                                            X: <span class="adjustable" id="scale-x">100</span><br />
+                                                            Y: <span class="adjustable" id="scale-y">100</span><br />
+                            
+                                                        </div>-->
+                            <div style="clear:both;"></div>
+
+                        </div>
+
+
+                        <hr />
+
+                        <div class="edit-property">
+
+                            <table cellspacing="0" cellpadding="0" style="width:100%;">
+                                <tr>
+                                    <td></td>
+                                    <td><span class="adjustable" id="border-top-left-x">0</span></td>
+                                    <td><span class="adjustable" id="border-top-right-x">0</span></td>
+                                </tr>
+                                <tr>
+                                    <td><span class="adjustable" id="border-top-left-y">0</span></td>
+                                    <td style="border-top:1px solid black; border-left:1px solid black;"></td>
+                                    <td style="border-top:1px solid black;  border-right:1px solid black;"></td>
+                                    <td><span class="adjustable" id="border-top-right-y">0</span></td>
+
+                                </tr>
+
+                                <tr>
+                                    <td><span class="adjustable" id="border-bottom-left-y">0</span></td>
+                                    <td style="border-bottom:1px solid black; border-left:1px solid black;"></td>
+                                    <td style="border-bottom:1px solid black;  border-right:1px solid black;"></td>
+                                    <td><span class="adjustable" id="border-bottom-right-y">0</span></td>
+
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><span class="adjustable" id="border-bottom-left-x">0</span></td>
+                                    <td><span class="adjustable" id="border-bottom-right-x">0</span></td>
+                                </tr>
+                            </table>
+
+                            <div style="clear:both;"></div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="well">
+                    <ul id="layers"></ul>
+                </div>
+
+            </div><div class="content"><div id="preview-selection" class="draggable">
+
+                    <div id="selection-origin" class="draggable"></div>
+
+                    <div id="selection-size-top-left" class="selection-size draggable"></div>
+                    <div id="selection-size-left" class="selection-size draggable"></div>
+                    <div id="selection-size-bottom-left" class="selection-size draggable"></div>
+
+                    <div id="selection-size-bottom" class="selection-size draggable"></div>
+                    <div id="selection-size-top" class="selection-size draggable"></div>
+
+                    <div id="selection-size-top-right" class="selection-size draggable"></div>
+                    <div id="selection-size-right" class="selection-size draggable"></div>
+                    <div id="selection-size-bottom-right" class="selection-size draggable"></div>
+
+                    <div id="border-position-top-left" class="border-position draggable"></div>
+                    <div id="border-position-top-right" class="border-position draggable"></div>
+                    <div id="border-position-bottom-left" class="border-position draggable"></div>
+                    <div id="border-position-bottom-right" class="border-position draggable"></div>
+
+
+                </div><div id="preview"></div>
+
+
+
+                <footer>
+                    <p>&copy; Company 2012</p>
+                </footer>
+            </div>
+        </div>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/libs/jquery-1.6.2.min.js"><\/script>')</script>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+
+
+        <script src="src/editor.js"></script>
+
+    </body>
 </html>

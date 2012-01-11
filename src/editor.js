@@ -20,6 +20,8 @@ function CSS3Editor( $ ) {
     $previewSelection = $('#preview-selection'),
     $selectionOrigin = $('#selection-origin'),
     prefixes = {},
+    
+    $viewsource = $('#viewsource'),
 
     $btlx = $('#border-top-left-x'),
     $btly = $('#border-top-left-y'),
@@ -73,7 +75,22 @@ function CSS3Editor( $ ) {
 
     adjustableDragPos,
     adjusting,
-    adjustingStartVal;
+    adjustingStartVal,
+    
+    savedProperties = {
+        "width": "width",
+        "height": "height",
+        "borderTopLeftRadius": null,
+        "borderTopRightRadius": null,
+        "borderBottomLeftRadius": null,
+        "borderBottomRightRadius": null,
+        "backgroundColor": "backgroundColor",
+        "transform": null,
+        "transformOrigin": null,
+        "opacity": "opacity"
+        
+    },
+    i;
     /*
     $selectionOrigin.draggable({
         containment: $previewSelection,
@@ -98,6 +115,9 @@ function CSS3Editor( $ ) {
         }
     });
 
+   
+
+
     function prefixCheck( prop ) {
         var prefixes = ['','-webkit-','-moz-','-o-','-ms-'],
         len = prefixes.length,
@@ -109,8 +129,16 @@ function CSS3Editor( $ ) {
                 return prefixes[ i ] + prop;
             }
         }
+        return null;
 
-    };
+    }
+    
+    // get vendor specific names for properties we need
+    for (i in savedProperties) {
+        if ( savedProperties.hasOwnProperty( i ) &&  savedProperties[ i ] === null ) {
+            savedProperties[ i ] = prefixCheck( i );
+        }
+    }
 
     prefixes.transformOrigin = prefixCheck("transform-origin");
     prefixes.transformOriginX = prefixCheck("transform-origin-x");
@@ -147,7 +175,7 @@ function CSS3Editor( $ ) {
         if ( positioning === "percentage" ) {
             $(el).css({
                 top: ((y / height) * 100) + "%",
-                left: ((x / width) * 100) + "%",
+                left: ((x / width) * 100) + "%"
             });
 
             $positionX.text( ( rounding( (x / width) * 100) ) );
@@ -156,7 +184,7 @@ function CSS3Editor( $ ) {
         } else {
             $(el).css({
                 top: y + "px",
-                left: x + "px",
+                left: x + "px"
             });
             $positionX.text( rounding(x) );
             $positionY.text( rounding(y) );
@@ -168,7 +196,7 @@ function CSS3Editor( $ ) {
         if ( positioning === "percentage" ) {
             $(el).css({
                 width: ((w / width) * 100) + "%",
-                height: ((h / height) * 100) + "%",
+                height: ((h / height) * 100) + "%"
             });
             $(el).css(prefixes.transformOrigin, (($originX.val() / width) * 100) + "% " + (($originY.val() / height) * 100) + "%");
 
@@ -179,7 +207,7 @@ function CSS3Editor( $ ) {
         } else {
             $(el).css({
                 width: w + "px",
-                height: h + "px",
+                height: h + "px"
             });
             $(el).css(prefixes.transformOrigin, $originX.val() + "px " + $originY.val() + "px");
 
@@ -389,7 +417,48 @@ function CSS3Editor( $ ) {
         }
 
     }
+    
+  
+    
 
+    function getElementCSS ( element ) {
+        var prop,
+        css = {};
+        for (prop in savedProperties) {
+            if ( savedProperties.hasOwnProperty( prop ) ) {
+                console.log(savedProperties[ prop ]);
+                css[ prop ] = element.style[ savedProperties[ prop ] ];
+            }
+        }
+        return css;
+        
+    }
+
+    function createSource ( ) {
+        var elements = [];
+       
+        preview.find('.css3shape').each( function(i, e) {
+            var element = {
+                name: $(e).attr('data-name'),
+                zindex: i,
+                css: getElementCSS( e )
+               
+            };
+            elements.push( element );
+           
+        } );
+        
+        return elements;
+    }
+
+    $viewsource.click(function(e){
+        e.preventDefault();
+       
+        var sourceElements = createSource();
+        console.log(sourceElements);
+       
+        
+    });
 
 
     $adjustable.bind('mousedown',function(e){
@@ -418,6 +487,8 @@ function CSS3Editor( $ ) {
         if (adjusting !== undefined) {
             setAdjustingVal(rounding(adjustingStartVal + (e.pageX - adjustableDragPos)));
         }
+
+
 
         var left,
         top,
@@ -617,8 +688,22 @@ function CSS3Editor( $ ) {
         }
 
     }).bind('mouseup', function(){
+        
+        if (action === "createShape") {
+            $('#edit-shape').trigger('click');
+
+            setOrigin(currentEl, currentEl.width()/2, currentEl.height()/2 );
+
+            currentEl = undefined;
+
+
+
+
+        }
+        
         adjusting = undefined;
         dragging = undefined;
+        
     });
 
 
@@ -793,19 +878,6 @@ function CSS3Editor( $ ) {
 
 
 
-
-    }).mouseup(function() {
-        if (action === "createShape") {
-            $('#edit-shape').trigger('click');
-
-            setOrigin(currentEl, currentEl.width()/2, currentEl.height()/2 );
-
-            currentEl = undefined;
-
-
-
-
-        }
 
     });
 

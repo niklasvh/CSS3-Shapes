@@ -6,6 +6,62 @@
         Purpose of the stylesheet follows.
 */
 
+
+
+body {
+    padding-top: 45px;
+    background: #191919;
+}
+
+.well{
+    background: #484848;
+    color: #fff;
+    border: 1px solid #5d5d5d;
+    padding:0;
+
+}
+
+.container-fluid {
+    padding-left:5px;
+    padding-right:5px;
+}
+
+.sidebar {
+    left:5px !important;
+}
+
+.content {
+    margin-left: 225px !important;
+    margin-top:0;
+    padding:0;
+}
+
+a {
+    color:  #c89200;
+}
+a:hover {
+    color: #c8ad5b;
+}
+
+.btn span {
+    display:block;
+    width:16px;
+    height:16px;
+}
+#tools {
+    line-height:40px;
+}
+
+.well hr {
+    border-top:1px solid #262626;
+    background:#575757;
+    border-bottom: 1px solid #575757;
+    margin:5px 0;
+}
+
+
+
+
 root { 
     display: block;
 }
@@ -67,6 +123,32 @@ root {
 
 
 
+}
+
+#message {
+    display:none;
+    position:fixed;
+    bottom:0;
+    min-width:500px;
+    left:25%;
+    right:25%;
+}
+
+.myinput label {
+    width:80px;
+}
+
+#source  {
+
+    background: #fff;
+
+}
+
+#html, #css {
+    max-height: 100px;
+    overflow-y: scroll;
+    overflow-x:hidden;
+    min-height:90px;
 }
 
 #layers {
@@ -175,7 +257,7 @@ root {
     -webkit-border-radius: 3px; 
     -moz-border-radius: 3px; 
     border-radius: 3px; 
-    
+
     cursor:default;
 }
 
@@ -201,7 +283,7 @@ root {
 #preview #border-position-bottom-right {
     bottom:0;
     right:0;
-     margin: 0 0 -2px -2px;
+    margin: 0 0 -2px -2px;
 }
 
 #preview .selection-size {

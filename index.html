@@ -16,59 +16,6 @@
 
         <link href="editor.css" rel="stylesheet">
 
-        <style type="text/css">
-            body {
-                padding-top: 45px;
-                background: #191919;
-            }
-
-            .well{
-                background: #484848;
-                color: #fff;
-                border: 1px solid #5d5d5d;
-                padding:0;
-
-            }
-
-            .container-fluid {
-                padding-left:5px;
-                padding-right:5px;
-            }
-
-            .sidebar {
-                left:5px !important;
-            }
-
-            .content {
-                margin-left: 225px !important;
-                margin-top:0;
-                padding:0;
-            }
-
-            a {
-                color:  #c89200;
-            }
-            a:hover {
-                color: #c8ad5b;
-            }
-
-            .btn span {
-                display:block;
-                width:16px;
-                height:16px;
-            }
-            #tools {
-                line-height:40px;
-            }
-
-            .well hr {
-                border-top:1px solid #262626;
-                background:#575757;
-                border-bottom: 1px solid #575757;
-                margin:5px 0;
-            }
-
-        </style>
 
         <!-- Le fav and touch icons -->
         <link rel="shortcut icon" href="images/favicon.ico">
@@ -85,8 +32,17 @@
                     <a class="brand" href="https://github.com/niklasvh/CSS3-Shapes">CSS3 Shapes</a>
                     <ul class="nav">
                         <li class="active"><a href="#">Home</a></li>
-                      
-                  
+
+                        <li class="menu"  data-dropdown="dropdown">
+                            <a href="#" class="menu">Open</a>
+                            <ul class="menu-dropdown">
+                                <li><a href="#">First</a></li>
+                                <li><a href="#">Second</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#">View all</a></li>
+                            </ul>
+                        </li>
+
                     </ul>
 
                     <span id="tools">
@@ -97,11 +53,11 @@
                             <a href="#" class="btn small"  data-shape="rectangle">Rectangle</a>
                         </span>
                     </span>
-                    
+
                     <span class="pull-right" style="line-height:40px;">
                         <a href="#" class="btn small info" id="viewsource"  data-shape="rectangle">View Source</a>
-                        
-                         <a href="#" class="btn small success" id="save"  data-shape="rectangle">Save changes</a>
+
+                        <a href="#" class="btn small success" id="save"  data-shape="rectangle">Save changes</a>
                     </span>
                 </div>
             </div>
@@ -245,6 +201,89 @@
 
                 </div><div id="preview"></div>
 
+                <div id="saveas" class="modal hide fade">
+                    <div class="modal-header">
+                        <a href="#" class="close">×</a>
+                        <h3>Save As</h3>
+                    </div>
+
+                    <div class="modal-body">
+                        <form class="form-stacked">
+                            <div class="clearfix">
+                                <label for="scenename">Scene name</label>
+                                <div class="input">
+                                    <input class="xlarge" id="scenename" size="30" type="text">
+                                    <span class="help-inline"></span>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#" class="btn primary" id="saveasname">Save changes</a>
+                        <a href="#" class="btn secondary">Cancel</a>
+                    </div>
+                </div>
+
+                <div id="source" class="modal hide fade">
+
+
+
+                    <div class="modal-header">
+                        <a href="#" class="close">×</a>
+                        <h3>View Source</h3>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="clearfix">
+                            <span class="help-block">
+                                <strong>Options:</strong> Export with vendor prefixes
+                            </span>
+                            <div class="myinput">
+
+                                <label>
+                                    <input type="checkbox" name="optionsCheckboxes" value="option1" checked>
+                                    <span>-webkit</span>
+                                </label>
+
+                                <label>
+                                    <input type="checkbox" name="optionsCheckboxes" value="option2" checked>
+                                    <span>-moz</span>
+                                </label>
+
+                                <label>
+                                    <input type="checkbox" name="optionsCheckboxes" value="option2" checked>
+                                    <span>-o</span>
+                                </label>
+
+                                <label>
+                                    <input type="checkbox" name="optionsCheckboxes" value="option2" checked>
+                                    <span>-ms</span>
+                                </label>
+
+
+                            </div>
+                        </div> <div style="clear:both;"> </div>
+                        <p class="clearfix">HTML:</p>
+
+                        <pre id="html" class="copy-code"></pre>
+
+                        <p>CSS:</p>
+                        <pre id="css" class="copy-code"></pre>
+                    </div>
+
+                    <div class="modal-footer">
+                        <a href="#" class="btn primary">Save as File</a>
+                        <a href="#" class="btn secondary">Close</a>
+                    </div>
+
+                </div>
+
+
+                <div class="alert-message success" id="message">
+                    <a class="close" href="#" id="messageclose">×</a>
+                    <p><strong>Well done!</strong> You successfully <a href="#">read this</a> alert message.</p>
+                </div>
 
 
                 <footer>
@@ -257,7 +296,8 @@
 
         <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
 
-
+        <script src="js/bootstrap-modal.js"></script>
+        <script src="js/bootstrap-dropdown.js"></script>
         <script src="src/editor.js"></script>
 
     </body>

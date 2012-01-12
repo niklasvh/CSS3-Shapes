@@ -7,7 +7,7 @@
 function CSS3Editor( $ ) {
 
     var preview = $('#preview'),
-    action,
+    action = "editShape",
     shapeNum = 1,
     positioning,
     width = preview.width(),
@@ -21,7 +21,10 @@ function CSS3Editor( $ ) {
     $selectionOrigin = $('#selection-origin'),
     prefixes = {},
     
+    $editshape = $('#edit-shape'),
+    
     $viewsource = $('#viewsource'),
+    $saveas = $('#saveas'),
 
     $btlx = $('#border-top-left-x'),
     $btly = $('#border-top-left-y'),
@@ -52,6 +55,8 @@ function CSS3Editor( $ ) {
     $skewX = $('#skew-x'),
     $skewY = $('#skew-y'),
 
+
+    $message = $('#message'),
     //  $scaleX = $('#scale-x'),
     //  $scaleY = $('#scale-y'),
 
@@ -69,6 +74,8 @@ function CSS3Editor( $ ) {
     dragging,
     draggingOffset,
     previewOffset,
+    
+    $source = $('#source'),
 
     $bgcolor = $('#backgroundcolor'),
     $layers = $('#layers'),
@@ -78,15 +85,17 @@ function CSS3Editor( $ ) {
     adjustingStartVal,
     
     savedProperties = {
+        "left": "left",
+        "top": "top",
         "width": "width",
         "height": "height",
-        "borderTopLeftRadius": null,
-        "borderTopRightRadius": null,
-        "borderBottomLeftRadius": null,
-        "borderBottomRightRadius": null,
-        "backgroundColor": "backgroundColor",
+        "border-top-left-radius": null,
+        "border-top-right-radius": null,
+        "border-bottom-left-radius": null,
+        "border-bottom-right-radius": null,
+        "background-color": "background-color",
         "transform": null,
-        "transformOrigin": null,
+        "transform-origin": null,
         "opacity": "opacity"
         
     },
@@ -441,21 +450,54 @@ function CSS3Editor( $ ) {
             var element = {
                 name: $(e).attr('data-name'),
                 zindex: i,
-                css: getElementCSS( e )
+                css: getElementCSS( e ),
+                positioning: $(e).attr('data-positioning')
                
             };
             elements.push( element );
            
         } );
         
-        return elements;
+        return {
+            shapeNum: shapeNum,
+            elements: elements
+        };
     }
+
+    $source.modal({
+        keyboard: true,
+        backdrop: true
+    });
+    
+    $saveas.modal({
+        keyboard: true,
+        backdrop: true
+    });
+
 
     $viewsource.click(function(e){
         e.preventDefault();
        
-        var sourceElements = createSource();
-        console.log(sourceElements);
+        var sourceElements = createSource(),
+        len = sourceElements.elements.length,
+        i,
+        $html = $('#html'),
+        html = '<div class="css3shapes">\n';
+        $source.modal('toggle');
+        
+        
+        // $('#source').show();
+        
+        
+        for ( i = 0; i < len; i += 1 ) {
+            html += '\t<div class="' + sourceElements.elements[i].name + '"></div>\n';
+        }
+        
+        html += "</div>"
+        
+        $html.text(html);
+        
+       // console.log(sourceElements);
        
         
     });
@@ -481,6 +523,140 @@ function CSS3Editor( $ ) {
             return false;
         }
 
+    });
+    
+    function loadScene ( name ) {
+        var saved = JSON.parse( localStorage.getItem( name ) ),
+        len,
+        i,
+        prop,
+        currentEl;
+       
+        if (typeof saved.elements !== "object") {
+            console.log('invalid save');
+            return false;
+        }
+       
+       
+        clearScene();
+       
+        shapeNum = saved.shapeNum;
+        len = saved.elements.length;
+       
+        for (i = 0; i < len; i+=1 ) {
+           
+           
+            currentEl = $('<div />')
+            .addClass('css3shape ' + saved.elements[ i ].name)
+            .css({
+                backgroundColor: $bgcolor.val()
+            })
+            .attr('data-positioning',  saved.elements[ i ].positioning)
+            .attr('data-name', saved.elements[ i ].name);
+
+           
+           
+            for (prop in savedProperties) {
+                if ( savedProperties.hasOwnProperty( prop ) ) {
+                    currentEl[0].style[ savedProperties[ prop ] ] =  saved.elements[ i ].css[ prop ];
+                }
+            }
+           
+            
+            $('<li />').addClass('btn small').text(currentEl.attr('data-name')).prependTo( $layers );
+
+            preview.append( currentEl  );
+            
+        }
+
+    }
+    
+    function clearScene() {
+        $('#preview').find('div').each(function(i,e ){
+            deleteShape(e); 
+        });
+    }
+    
+    
+    function getSaveName( url ) {
+        if (url.hash.length <= 1) {
+            return undefined;
+        } else {
+            return url.hash.substring(1);
+        }
+    }
+    
+    function setName( name ) {
+        window.location.hash = "#" + name;
+    }
+    
+    function saveScene( name ) {
+        localStorage.setItem( name, JSON.stringify( createSource() ) );
+        showMessage('success','<strong>Success!</strong> Your scene has been stored to your browsers storage')
+    }
+    
+    function showMessage(type, message, autoclose) {
+
+        $message.removeClass('success').fadeIn();
+        
+        switch(type) {
+            case "success":
+                $message.addClass('success');
+                break;
+            
+        }
+        
+        $message.find('p').html(message)
+        
+        if (autoclose === undefined || autoclose) {
+            window.setTimeout(function(){
+                $message.fadeOut();
+            }, 3000);
+        }
+        
+    }
+    
+    $('#saveasname').click(function(e) {
+        e.preventDefault();
+        var name = $('#scenename').val().trim();
+        setName( name );
+        saveScene( name );
+        $saveas.modal('hide');
+        
+    });
+    
+    
+    $('#save').click(function(e) {
+        e.preventDefault();
+        var name = getSaveName( window.location );
+        if ( name === undefined ) {
+            $saveas.modal('toggle');  
+        } else  {
+            saveScene(name);
+        }
+       
+        
+    });
+    
+    
+    
+    $('#scenename').bind('keyup change', function(e){
+        
+    
+            if (this.value.length > 0 && localStorage.getItem(this.value) !== null) {
+                $(this).parent().parent().addClass('warning');
+                $(this).next().text("A scene exists with that name already");
+            } else {
+                $(this).parent().parent().removeClass('warning');
+                 $(this).next().text("");
+            }
+        
+        
+    });
+    
+    $('#messageclose').click(function(e){
+       e.preventDefault();
+       $message.fadeOut();
     });
 
     $(document).bind('mousemove' ,function(e){
@@ -690,7 +866,7 @@ function CSS3Editor( $ ) {
     }).bind('mouseup', function(){
         
         if (action === "createShape") {
-            $('#edit-shape').trigger('click');
+            $editshape.trigger('click');
 
             setOrigin(currentEl, currentEl.width()/2, currentEl.height()/2 );
 
@@ -735,7 +911,7 @@ function CSS3Editor( $ ) {
     });
 
 
-    $('#edit-shape').click(function( e ) {
+    $editshape.click(function( e ) {
         e.preventDefault();
         preview.css('cursor', 'pointer');
         action = "editShape";
@@ -777,7 +953,7 @@ function CSS3Editor( $ ) {
         selectShape($('.' + $(this).text()));
     });
 
-    $('#preview').mousedown( function(e){
+    preview.mousedown( function(e){
         var $target = $(e.target);
 
         switch( action ) {
@@ -884,7 +1060,9 @@ function CSS3Editor( $ ) {
     $(document).bind('keydown',function(e){
 
 
-
+        //   console.log(e);
+     
+     
         switch (e.keyCode) {
             case 46: // del
 
@@ -895,6 +1073,34 @@ function CSS3Editor( $ ) {
 
 
                 break;
+                
+            case 69: // E
+
+                $editshape.trigger('click');
+
+
+                break;
+            case 82: // R
+                $('#shapes a[data-shape="rectangle"]').trigger('click');
+                
+                break;      
+            case 83: // S
+                if (e.ctrlKey === true) {
+                    $('#save').trigger('click');
+                    return false;
+                }
+                
+                break;
+                
+            case 85: // U
+                if (e.ctrlKey === true) {
+                    $viewsource.trigger('click');
+                    return false;
+                }
+                
+              
+
+                break;
         }
 
 
@@ -902,7 +1108,15 @@ function CSS3Editor( $ ) {
 
 
     selectShape(undefined);
-
+    
+    (function(loc){
+        if (loc !== undefined) {
+            loadScene( loc );
+        }
+        
+    })(getSaveName(window.location));
+    
+    $('#topbar').dropdown();
 };
 
 

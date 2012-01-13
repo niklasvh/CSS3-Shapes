@@ -54,6 +54,8 @@ function CSS3Editor( $ ) {
     $rotation = $('#rotation'),
     $skewX = $('#skew-x'),
     $skewY = $('#skew-y'),
+    
+    $opacity = $('#opacity'),
 
 
     $message = $('#message'),
@@ -69,6 +71,7 @@ function CSS3Editor( $ ) {
     $sizeH = $('#size-h'),
 
     $options = $('#element-options'),
+    $sceneOptions = $('#scene-options'),
 
     startPos,
     dragging,
@@ -84,19 +87,23 @@ function CSS3Editor( $ ) {
     adjusting,
     adjustingStartVal,
     
+    
+    
+    fileNames = [],
+    
     savedProperties = {
         "left": "left",
         "top": "top",
         "width": "width",
         "height": "height",
+        "opacity": "opacity",
         "border-top-left-radius": null,
         "border-top-right-radius": null,
         "border-bottom-left-radius": null,
         "border-bottom-right-radius": null,
         "background-color": "background-color",
         "transform": null,
-        "transform-origin": null,
-        "opacity": "opacity"
+        "transform-origin": null
         
     },
     i;
@@ -244,18 +251,25 @@ function CSS3Editor( $ ) {
         setSize (el, width, height );
     }
 
-    function rounding(val, decimals) {
-        return Math.round(val * 10) / 10;
+    function rounding( val, decimals ) {
+        if (val !== undefined) {
+            val = val.toString().replace("%","").replace("px","");
+            return Math.round(val * 10) / 10;
+        } else {
+            return 0;
+        }
+        
+       
     }
 
 
     function deleteShape ( el )  {
 
         if ( el === selectedShape ) {
-            $previewSelection.insertAfter(preview);
+            $previewSelection.insertAfter( preview );
         }
 
-        $layers.find('li:contains('+el.attr('data-name')+')').remove();
+        $layers.find('li:contains(' + el.attr('data-name') + ')').remove();
 
         el.remove();
         selectShape();
@@ -263,17 +277,22 @@ function CSS3Editor( $ ) {
 
     function selectShape( el  ){
         var pos,
-        parts;
+        parts,
+        i;
 
-        $('.selected-shape').removeClass('selected-shape');
+        $('.selected-shape').removeClass( 'selected-shape' );
 
         selectedShape = el;
-
+        
         $('#layers li').removeClass('selected-layer primary');
 
-        if (el !== undefined) {
+        if ( el !== undefined ) {
+            
+            positioning = el.attr( 'data-positioning' );
+        
             $options.show();
-
+            $sceneOptions.hide();
+            
             $layers.find('li:contains('+el.attr('data-name')+')').addClass('selected-layer primary');
 
 
@@ -282,33 +301,65 @@ function CSS3Editor( $ ) {
 
             delete (parts[0]);
 
-            for (var i = 1; i <= 3; ++i) {
-                parts[i] = parseInt(parts[i]).toString(16);
-                if (parts[i].length == 1) parts[i] = '0' + parts[i];
+            for (i = 1; i <= 3; ++i) {
+                parts[ i ] = parseInt( parts[ i ], 10 ).toString(16);
+                if (parts[ i ].length === 1) parts[ i ] = '0' + parts[ i ];
             }
             $bgcolor.val( '#'+parts.join('') );
 
 
             $elName.val( el.attr('data-name') );
 
+            $opacity.val( rounding( el.css( 'opacity' ) * 100 ) );
 
             selectedShape.addClass('selected-shape');
 
-            pos = selectedShape.css(prefixes.transformOrigin).split(" ");
+            pos = selectedShape[0].style[prefixes.transformOrigin].split(" ")
 
             $selectionOrigin.css({
                 left: pos[0],
                 top: pos[1]
             });
+            
+            $originX.text( rounding( pos[ 0 ] ) );
+            $originY.text( rounding( pos[ 1 ] ) );
+            
+            $positionX.text( rounding( selectedShape[ 0 ].style.left ) );
+            $positionY.text( rounding( selectedShape[ 0 ].style.top ) );
 
+            $sizeW.text( rounding( selectedShape[ 0 ].style.width ) );
+            $sizeH.text( rounding( selectedShape[ 0 ].style.height ) );
+
+            pos = selectedShape[0].style[prefixes.borderTopLeft].split(" ");
+            if ( pos.length > 0 ) {
+                $btlx.text( rounding( pos[ 0 ] ) );
+                $btly.text( rounding( pos[ 1 ] ) );
+            }
+
+            pos = selectedShape[0].style[prefixes.borderBottomLeft].split(" ");
+            if ( pos.length > 0 ) {
+                $bblx.text( rounding( pos[ 0 ] ) );
+                $bbly.text( rounding( pos[ 1 ] ) );
+            }
+            
+            
+            pos = selectedShape[0].style[prefixes.borderTopRight].split(" ");
+            if ( pos.length > 0 ) {
+                $btrx.text( rounding( pos[ 0 ] ) );
+                $btry.text( rounding( pos[ 1 ] ) );
+            }
+
+            pos = selectedShape[0].style[prefixes.borderBottomRight].split(" ");
+            if ( pos.length > 0 ) {
+                $bbrx.text( rounding( pos[ 0 ] ) );
+                $bbry.text( rounding( pos[ 1 ] ) );
+            }
+            //  
 
             selectedShape.append( $previewSelection );
-        /*
-            selectedShape.draggable({
-                handle: $previewSelection,
-                cancel: '.selection-size'
-            });*/
+        
         } else {
+            $sceneOptions.show();
             $options.hide();
         }
     }
@@ -349,16 +400,15 @@ function CSS3Editor( $ ) {
             case "border-bottom-right-x":
             case "border-bottom-right-y":
 
-                selectedShape.css(prefixes.borderRadius,
-                    $btlx.text()+ unit + ' ' +
-                    $btrx.text()+ unit + ' ' +
-                    $bbrx.text()+ unit + ' ' +
-                    $bblx.text()+ unit + '/' +
-                    $btly.text()+ unit + ' ' +
-                    $btry.text()+ unit + ' ' +
-                    $bbry.text()+ unit + ' ' +
-                    $bbly.text()+ unit
-                    );
+                selectedShape[0].style[prefixes.borderRadius] =
+                $btlx.text()+ unit + ' ' +
+                $btrx.text()+ unit + ' ' +
+                $bbrx.text()+ unit + ' ' +
+                $bblx.text()+ unit + '/' +
+                $btly.text()+ unit + ' ' +
+                $btry.text()+ unit + ' ' +
+                $bbry.text()+ unit + ' ' +
+                $bbly.text()+ unit;
 
                 // substr(0,-2) not working????
                 switch(adjusting.attr('id').substr(0,adjusting.attr('id').length-2)) {
@@ -397,19 +447,19 @@ function CSS3Editor( $ ) {
 
 
             case "position-x":
-                selectedShape.css('left', val + unit);
+                selectedShape[0].style.left = val + unit;
                 break;
 
             case "position-y":
-                selectedShape.css('top', val + unit);
+                selectedShape[0].style.top = val + unit;
                 break;
 
             case "size-w":
-                selectedShape.css('width', val + unit);
+                selectedShape[0].style.width = val + unit;
                 break;
 
             case "size-h":
-                selectedShape.css('height', val + unit);
+                selectedShape[0].style.height = val + unit;
                 break;
 
 
@@ -435,7 +485,6 @@ function CSS3Editor( $ ) {
         css = {};
         for (prop in savedProperties) {
             if ( savedProperties.hasOwnProperty( prop ) ) {
-                console.log(savedProperties[ prop ]);
                 css[ prop ] = element.style[ savedProperties[ prop ] ];
             }
         }
@@ -459,6 +508,7 @@ function CSS3Editor( $ ) {
         } );
         
         return {
+            background: preview.css('background-color'),
             shapeNum: shapeNum,
             elements: elements
         };
@@ -481,7 +531,12 @@ function CSS3Editor( $ ) {
         var sourceElements = createSource(),
         len = sourceElements.elements.length,
         i,
+        prop,
         $html = $('#html'),
+        css = '',
+        ignore,
+        val,
+        $css = $('#css'),
         html = '<div class="css3shapes">\n';
         $source.modal('toggle');
         
@@ -491,13 +546,52 @@ function CSS3Editor( $ ) {
         
         for ( i = 0; i < len; i += 1 ) {
             html += '\t<div class="' + sourceElements.elements[i].name + '"></div>\n';
+            css += '.' + sourceElements.elements[ i ].name + ' {\n';
+           
+            for ( prop in sourceElements.elements[ i ].css ) {
+                if ( sourceElements.elements[ i ].css.hasOwnProperty( prop ) ) {
+                    val = sourceElements.elements[ i ].css[ prop ];
+                    
+                    if (val.length === 0) {
+                        ignore = true;
+                    } else {
+                        ignore = false;
+                    }
+                   
+                    switch( prop ) {
+                        case "opacity":
+                            if ( val === "1" ) {
+                                ignore = true;
+                            }
+                            break;
+                        case "transform-origin":
+                            if ( val === "50% 50%" ) {
+                                ignore = true;
+                            }
+                            break;
+                            
+                        case "transform":
+                            val = val.replace(" skew(0deg, 0deg)", "");
+                            val = val.replace("rotate(0deg)", "");
+                            break;
+                     
+                    }
+                    if ( !ignore ) {
+                        css += "\t" + prop+": " + val  + ";\n";
+                    }
+                }    
+            }
+            
+            
+            css += '}\n\n';
         }
         
         html += "</div>"
         
+        $css.text(css);
         $html.text(html);
         
-       // console.log(sourceElements);
+    // console.log(sourceElements);
        
         
     });
@@ -533,7 +627,8 @@ function CSS3Editor( $ ) {
         currentEl;
        
         if (typeof saved.elements !== "object") {
-            console.log('invalid save');
+            showMessage("error", "<strong>Error!</strong> The selected scene name is not a valid scene", false);
+          
             return false;
         }
        
@@ -542,6 +637,8 @@ function CSS3Editor( $ ) {
        
         shapeNum = saved.shapeNum;
         len = saved.elements.length;
+        preview.css('background-color', saved.background);
+        $('#scenecolor').val(saved.background);
        
         for (i = 0; i < len; i+=1 ) {
            
@@ -568,12 +665,13 @@ function CSS3Editor( $ ) {
             preview.append( currentEl  );
             
         }
+        return true;
 
     }
     
     function clearScene() {
         $('#preview').find('div').each(function(i,e ){
-            deleteShape(e); 
+            deleteShape($(e)); 
         });
     }
     
@@ -587,24 +685,34 @@ function CSS3Editor( $ ) {
     }
     
     function setName( name ) {
-        window.location.hash = "#" + name;
+        if (name !== "filenames") {
+            window.location.hash = "#" + name;
+        }
     }
     
     function saveScene( name ) {
-        localStorage.setItem( name, JSON.stringify( createSource() ) );
+        try {
+            if ( fileNames.indexOf( name ) === -1) {
+                fileNames.push( name );
+                localStorage.setItem( "filenames", JSON.stringify( fileNames ) );
+            }
+            
+            localStorage.setItem( name, JSON.stringify( createSource() ) );
+            
+        }catch( e ){
+                
+            showMessage('error','<strong>Error!</strong> An error occured while trying to save the scene: ' + e);
+ 
+        }
+        
         showMessage('success','<strong>Success!</strong> Your scene has been stored to your browsers storage')
     }
     
     function showMessage(type, message, autoclose) {
 
         $message.removeClass('success').fadeIn();
-        
-        switch(type) {
-            case "success":
-                $message.addClass('success');
-                break;
-            
-        }
+        $message.addClass( type );
+    
         
         $message.find('p').html(message)
         
@@ -618,11 +726,13 @@ function CSS3Editor( $ ) {
     
     $('#saveasname').click(function(e) {
         e.preventDefault();
-        var name = $('#scenename').val().trim();
-        setName( name );
-        saveScene( name );
-        $saveas.modal('hide');
-        
+        if (!$('#scenename').parent().parent().hasClass('error')) {
+            var name = $('#scenename').val().trim();
+            setName( name );
+            saveScene( name );
+            $saveas.modal( 'hide' );
+        }
+    
     });
     
     
@@ -643,20 +753,25 @@ function CSS3Editor( $ ) {
     $('#scenename').bind('keyup change', function(e){
         
     
-            if (this.value.length > 0 && localStorage.getItem(this.value) !== null) {
-                $(this).parent().parent().addClass('warning');
-                $(this).next().text("A scene exists with that name already");
-            } else {
-                $(this).parent().parent().removeClass('warning');
-                 $(this).next().text("");
-            }
+        if(this.value === "filenames") {
+            $(this).parent().parent().removeClass('warning error');
+            $(this).parent().parent().addClass('error');
+            $(this).next().text("'filenames' is a reserved name");
+        } else if (this.value.length > 0 && localStorage.getItem(this.value) !== null) {
+            $(this).parent().parent().removeClass('warning error');
+            $(this).parent().parent().addClass('warning');
+            $(this).next().text("A scene exists with that name already");
+        } else {
+            $(this).parent().parent().removeClass('warning error');
+            $(this).next().text("");
+        }
         
         
     });
     
     $('#messageclose').click(function(e){
-       e.preventDefault();
-       $message.fadeOut();
+        e.preventDefault();
+        $message.fadeOut();
     });
 
     $(document).bind('mousemove' ,function(e){
@@ -672,14 +787,19 @@ function CSS3Editor( $ ) {
         w,
         unit = "px",
         pageX = e.pageX,
-        pageY = e.pageY;
+        pageY = e.pageY,
+        positioning;
 
-        if (positioning === "percentage") {
-            unit = "%";
-        }
 
+        
         if (dragging !== undefined) {
-
+            positioning = selectedShape.attr('data-positioning');
+            
+            if ( positioning === "percentage" ) {
+                unit = "%";
+            } else {
+                unit = "px";
+            }
 
 
             switch( dragging.attr('id') ){
@@ -731,13 +851,11 @@ function CSS3Editor( $ ) {
                         top = (pageY - previewOffset.top) - (startPos.top - draggingOffset.top);
                     }
 
-                    selectedShape.css({
-                        left: left + unit,
-                        top: top + unit
-                    });
+                    selectedShape[0].style.left = left + unit;
+                    selectedShape[0].style.top = top + unit;
 
-                    $positionX.text(rounding(left));
-                    $positionY.text(rounding(top));
+                    $positionX.text( rounding(left) );
+                    $positionY.text( rounding(top) );
 
                     
 
@@ -865,7 +983,7 @@ function CSS3Editor( $ ) {
 
     }).bind('mouseup', function(){
         
-        if (action === "createShape") {
+        if (action === "createShape" && currentEl !== undefined) {
             $editshape.trigger('click');
 
             setOrigin(currentEl, currentEl.width()/2, currentEl.height()/2 );
@@ -929,12 +1047,21 @@ function CSS3Editor( $ ) {
 
     });
 
+    $opacity.bind('change keyup',function() {
+        if (selectedShape !== undefined) {
+            selectedShape.css('opacity', this.value / 100);
+        }
+    });
 
 
     $bgcolor.bind('change keyup',function() {
         if (selectedShape !== undefined) {
             selectedShape.css('background-color', this.value);
         }
+    });
+    
+    $("#scenecolor").bind('change keyup',function() {  
+        preview.css('background-color', this.value); 
     });
 
     $elName.change(function(){
@@ -1093,7 +1220,7 @@ function CSS3Editor( $ ) {
                 break;
                 
             case 85: // U
-                if (e.ctrlKey === true) {
+                if ( e.ctrlKey === true ) {
                     $viewsource.trigger('click');
                     return false;
                 }
@@ -1106,17 +1233,68 @@ function CSS3Editor( $ ) {
 
     })
 
+    $('#openmenu').delegate('a[data-filename]','click', function(e){
+        // e.preventDefault(); we can assign hash straight from link
+        loadScene($(this).attr('data-filename'));
+        
+    });
 
-    selectShape(undefined);
+    selectShape( undefined );
     
-    (function(loc){
-        if (loc !== undefined) {
+    ( function(loc){
+        if ( loc !== undefined ) {
             loadScene( loc );
         }
         
-    })(getSaveName(window.location));
+    } )( getSaveName( window.location ) );
     
-    $('#topbar').dropdown();
+    ( function( names, $openmenu ) {
+        var saved = JSON.parse( localStorage.getItem( "filenames" ) ),
+        len,
+        i;
+        
+        if ( saved === null ) {
+            return;
+        }
+        
+        if ( typeof saved !== "object" ) {
+            return;
+        }
+        
+        len = saved.length;
+        
+        for ( i = 0; i < len; i+=1 ) {
+            names.push( saved[ i ] );
+        }
+      
+        names.reverse( );
+        
+        if (len > 0) {
+            len = Math.min( 5, len);
+            for ( i = 0; i < len; i += 1) {
+                $('<li />').append(
+                    $('<a />')
+                    .text( names[ i ] )
+                    .attr('data-filename', names[ i ] ) 
+                    .attr('href','#' + names[ i ])
+                    ).appendTo( $openmenu );
+            }
+            $('<li />').addClass('divider').appendTo($openmenu);
+            $('<li />').append(
+                $('<a />')
+                .text( "View all" )
+                .attr('id', "viewall" ) 
+                .attr('href','#')
+                ).appendTo($openmenu);
+              
+        }
+        
+        
+    } )( fileNames, $("#openmenu") );
+   
+    
+    
+    $('#topbar').dropdown( );
 };
 
 

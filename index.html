@@ -3,8 +3,8 @@
     <head>
         <meta charset="utf-8">
         <title>CSS3 Shapes</title>
-        <meta name="description" content="">
-        <meta name="author" content="">
+        <meta name="description" content="CSS editor for creating CSS3 shapes and scenes">
+        <meta name="author" content="Niklas von Hertzen">
 
         <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
         <!--[if lt IE 9]>
@@ -35,12 +35,7 @@
 
                         <li class="menu"  data-dropdown="dropdown">
                             <a href="#" class="menu">Open</a>
-                            <ul class="menu-dropdown">
-                                <li><a href="#">First</a></li>
-                                <li><a href="#">Second</a></li>
-                                <li class="divider"></li>
-                                <li><a href="#">View all</a></li>
-                            </ul>
+                            <ul class="menu-dropdown" id="openmenu"></ul>
                         </li>
 
                     </ul>
@@ -63,7 +58,14 @@
             </div>
         </div>
 
-        <div class="container-fluid"> <div class="sidebar">
+        <div class="container-fluid"> 
+            <div class="sidebar">
+                <div class="well" id="scene-options">
+                    <div class="edit-property">
+                        <label>Background: </label> <input type="text" id="scenecolor" value="#ffffff" />
+
+                    </div>
+                </div>
                 <div class="well" id="element-options">
                     <div class="bypercentage">
                         <div class="edit-property">
@@ -99,6 +101,7 @@
                         <hr />
                         <div class="edit-property">
                             <label>Color: </label> <input type="text" id="backgroundcolor" value="#484848" />
+                            <label>Opacity: </label> <input type="number" id="opacity" value="100" min="0" max="100" /> %
 
                         </div>
 
@@ -282,7 +285,7 @@
 
                 <div class="alert-message success" id="message">
                     <a class="close" href="#" id="messageclose">×</a>
-                    <p><strong>Well done!</strong> You successfully <a href="#">read this</a> alert message.</p>
+                    <p></p>
                 </div>
 
 
